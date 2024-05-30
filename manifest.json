@@ -2,7 +2,7 @@
     "name": "WA Export Reader",
     "short_name": "WA-ExReader",
     "start_url": "/WhatsappExportViewer/",
-    "display": "fullscreen",
+    "display": "standalone",
     "orientation":"potrait",
     "background_color": "#ffffff",
     "theme_color": "#317EFB",
