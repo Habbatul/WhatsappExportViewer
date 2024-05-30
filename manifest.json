@@ -3,6 +3,7 @@
     "short_name": "WA-ExReader",
     "start_url": "/WhatsappExportViewer/",
     "display": "standalone",
+    "orientation":"potrait",
     "background_color": "#ffffff",
     "theme_color": "#317EFB",
     "icons": [
@@ -16,6 +17,8 @@
         "sizes": "512x512",
         "type": "image/png"
       }
-    ]
+    ],
+    "manifest_version":2,
+    "version": "0.11"
   }
   
