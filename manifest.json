@@ -1,7 +1,7 @@
 {
     "name": "WA Export Reader",
     "short_name": "WA-ExReader",
-    "start_url": "https://habbatul.github.io/WhatsappExportViewer/",
+    "start_url": "/WhatsappExportViewer/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#317EFB",
