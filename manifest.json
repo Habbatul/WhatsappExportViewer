@@ -1,10 +1,6 @@
 {
     "name": "WA Export Reader",
     "short_name": "WA-ExReader",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#317EFB",
     "icons": [
       {
         "src": "icon.png",
