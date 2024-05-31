@@ -5,7 +5,6 @@ self.addEventListener('install', function(event) {
           '',
           'index.html',
           'register.js',
-          'main.js',
           'icon.png',
         ]);
       })
