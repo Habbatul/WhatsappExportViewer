@@ -121,20 +121,6 @@
     </div>
     <script src="register.js"></script>
     <script>
-        //=========================== mencegah scroll untuk reload ==========================
-
-        function addOverscrollBehavior() {
-            document.documentElement.style.overscrollBehavior = 'none';
-        }
-
-        document.getElementById('chatContainer').addEventListener('touchstart', function(e) {
-            addOverscrollBehavior();
-        });
-
-        document.getElementById('chatContainer').addEventListener('touchmove', function(e) {
-            addOverscrollBehavior();
-        });
-
         //=================== logic file input ============================================
 
         let allMessages = [];
