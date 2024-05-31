@@ -1,22 +1,5 @@
 //=========================== mencegah scroll untuk reload ==========================
-const chatContainer = document.getElementById('chatContainer');
-
-chatContainer.addEventListener('touchstart', function(e) {
-    const chatContainer = e.currentTarget;
-    if (chatContainer.scrollTop === 0) {
-        chatContainer.scrollTop += 1;
-    } else if (chatContainer.scrollHeight === chatContainer.scrollTop + chatContainer.clientHeight) {
-        chatContainer.scrollTop -= 1;
-    }
-});
-
-chatContainer.addEventListener('touchmove', function(e) {
-    const chatContainer = e.currentTarget;
-    if ((chatContainer.scrollTop === 0 && e.touches[0].clientY > e.touches[0].startY) ||
-        (chatContainer.scrollHeight === chatContainer.scrollTop + chatContainer.clientHeight && e.touches[0].clientY < e.touches[0].startY)) {
-        e.preventDefault();
-    }
-}, {passive: false});
+//belum ada
 //=================== logic file input ============================================
 
 let allMessages = [];
