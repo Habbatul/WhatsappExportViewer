@@ -4,8 +4,8 @@
     "start_url": "/WhatsappExportViewer/",
     "display": "standalone",
     "orientation": "portrait-primary",
-    "background_color": "#ffffff",
-    "theme_color": "#317EFB",
+    "background_color": "#567361b0",
+    "theme_color": "#567361b0",
     "icons": [
       {
         "src": "icon.png",
