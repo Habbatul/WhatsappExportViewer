@@ -232,20 +232,15 @@
         const userColors = {};
         let lastUser = null;
         let lastColor = null;
-        let totalMessages = 0;
-        let visibleMessages = 60;
-        let currentScrollHeight = 0;
 
         function displayMessages(messages) {
             const chatContainer = document.getElementById('chatContainer');
             chatContainer.innerHTML = '<div id="currentDate"></div>';
 
             let currentDate = '';
-            const fragment = document.createDocumentFragment();
+            const fragment = document.createDocumentFragment(); //pakek fragent biar mempercepat
 
-            const limitedMessages = messages.slice(0, visibleMessages);
-
-            limitedMessages.forEach((msg, index) => {
+            messages.forEach(msg => {
                 if (msg.date !== currentDate) {
                     currentDate = msg.date;
                     const dateGroup = document.createElement('div');
@@ -259,34 +254,38 @@
                 messageElement.setAttribute('data-date', msg.date);
                 messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
                 messageElement.style.backgroundColor = getUserColor(msg.user);
-                fragment.appendChild(messageElement);
+                fragment.appendChild(messageElement); //pakek fragent biar mempercepat
             });
 
             chatContainer.appendChild(fragment);
 
             // Scroll to bottom after rendering
             chatContainer.scrollTop = chatContainer.scrollHeight;
-
-            totalMessages = messages.length;
-            currentScrollHeight = chatContainer.scrollHeight;
-
-            // Add scroll event listener
-            chatContainer.addEventListener('scroll', handleScroll);
         }
 
+        function getUserColor(username) {
+            if (!userColors[username]) {
+                userColors[username] = (lastColor === '#dcf8c6') ? '#ffffff' : '#dcf8c6';
+            }
+            lastUser = username;
+            lastColor = userColors[username];
+            return userColors[username];
+        }
+
+
+        //================ coba lazy scroll =============
         function handleScroll() {
             const chatContainer = document.getElementById('chatContainer');
-            const scrollableHeight = chatContainer.scrollHeight - chatContainer.clientHeight;
-            const scrolledHeight = chatContainer.scrollTop;
+            const scrolledHeight = chatContainer.scrollHeight - chatContainer.clientHeight - chatContainer.scrollTop;
 
-            if (scrollableHeight - scrolledHeight < 200 && visibleMessages < totalMessages) {
+            if (scrolledHeight < 200 && visibleMessages < totalMessages) {
                 const remainingMessages = totalMessages - visibleMessages;
                 const newMessagesToShow = remainingMessages >= 60 ? 60 : remainingMessages;
 
                 const fragment = document.createDocumentFragment();
 
                 for (let i = visibleMessages; i < visibleMessages + newMessagesToShow; i++) {
-                    const msg = messages[i];
+                    const msg = allMessages[i];
                     const currentDate = msg.date;
 
                     const messageElement = document.createElement('div');
@@ -299,18 +298,17 @@
 
                 chatContainer.appendChild(fragment);
                 visibleMessages += newMessagesToShow;
+
+                chatContainer.scrollTop = chatContainer.scrollHeight - currentScrollHeight;
                 currentScrollHeight = chatContainer.scrollHeight;
             }
         }
 
-        function getUserColor(username) {
-            if (!userColors[username]) {
-                userColors[username] = (lastColor === '#dcf8c6') ? '#ffffff' : '#dcf8c6';
-            }
-            lastUser = username;
-            lastColor = userColors[username];
-            return userColors[username];
-        }
+        document.getElementById('chatContainer').addEventListener('scroll', function() {
+            handleScroll(); 
+        });
+
+
 
 
         //========================= Update keterangan tanggal saat ini =============
