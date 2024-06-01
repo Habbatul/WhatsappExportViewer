@@ -214,8 +214,6 @@
         }
 
         //========= untuk menerapkan filter =============
-        let displayedMessages = []; 
-        let chunkSize = 60; 
 
         function applyFilters() {
             const filterDate = document.getElementById('dateFilter').value.split('-').reverse().map((part, index) => index === 2 ? part.slice(2) : part).join('/');
@@ -227,22 +225,20 @@
                 return matchesDate && matchesSearch;
             });
 
-            displayedMessages = []; 
-            displayMessages(filteredMessages.slice(0, chunkSize)); 
+            displayMessages(filteredMessages);
         }
 
+        //========= nampilin chat saat ini, ada beberapa printilan untuk pembeda user =============
         const userColors = {};
         let lastUser = null;
         let lastColor = null;
 
         function displayMessages(messages) {
             const chatContainer = document.getElementById('chatContainer');
-            if (displayedMessages.length === 0) {
-                chatContainer.innerHTML = '<div id="currentDate"></div>';
-            }
+            chatContainer.innerHTML = '<div id="currentDate"></div>';
 
-            let currentDate = displayedMessages.length > 0 ? displayedMessages[displayedMessages.length - 1].date : '';
-            const fragment = document.createDocumentFragment();
+            let currentDate = '';
+            const fragment = document.createDocumentFragment(); //pakek fragent biar mempercepat
 
             messages.forEach(msg => {
                 if (msg.date !== currentDate) {
@@ -258,15 +254,12 @@
                 messageElement.setAttribute('data-date', msg.date);
                 messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
                 messageElement.style.backgroundColor = getUserColor(msg.user);
-                fragment.appendChild(messageElement);
+                fragment.appendChild(messageElement);//pakek fragent biar mempercepat
             });
 
             chatContainer.appendChild(fragment);
-            displayedMessages = displayedMessages.concat(messages);
 
-            if (displayedMessages.length === chunkSize) {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         function getUserColor(username) {
@@ -277,21 +270,6 @@
             lastColor = userColors[username];
             return userColors[username];
         }
-
-        function loadMoreMessages() {
-            const scrollTop = document.getElementById('chatContainer').scrollTop;
-            if (scrollTop === 0) {
-                const remainingMessages = allMessages.slice(displayedMessages.length, displayedMessages.length + chunkSize);
-                if (remainingMessages.length > 0) {
-                    const currentHeight = chatContainer.scrollHeight;
-                    displayMessages(remainingMessages);
-                    chatContainer.scrollTop = chatContainer.scrollHeight - currentHeight;
-                }
-            }
-        }
-
-        document.getElementById('chatContainer').addEventListener('scroll', loadMoreMessages);
-        
 
 
         //========================= Update keterangan tanggal saat ini =============
