@@ -121,6 +121,15 @@
     </div>
     <script src="register.js"></script>
     <script>
+        document.getElementById('chatContainer').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        });
+
+        document.getElementById('chatContainer').addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        });
+
+
         let allMessages = [];
 
         document.getElementById('fileInput').addEventListener('change', function(event) {
