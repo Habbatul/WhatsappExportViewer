@@ -2,22 +2,21 @@
 const chatContainer = document.getElementById('chatContainer');
 
 chatContainer.addEventListener('touchstart', function(e) {
-    if (e.target === chatContainer || chatContainer.contains(e.target)) {
-        e.stopPropagation();
-    } else {
-        e.preventDefault();
+    const chatContainer = e.currentTarget;
+    if (chatContainer.scrollTop === 0) {
+        chatContainer.scrollTop += 1;
+    } else if (chatContainer.scrollHeight === chatContainer.scrollTop + chatContainer.clientHeight) {
+        chatContainer.scrollTop -= 1;
     }
 });
 
 chatContainer.addEventListener('touchmove', function(e) {
-    if (e.target === chatContainer || chatContainer.contains(e.target)) {
-        e.stopPropagation();
-    } else {
+    const chatContainer = e.currentTarget;
+    if ((chatContainer.scrollTop === 0 && e.touches[0].clientY > e.touches[0].startY) ||
+        (chatContainer.scrollHeight === chatContainer.scrollTop + chatContainer.clientHeight && e.touches[0].clientY < e.touches[0].startY)) {
         e.preventDefault();
     }
-});
-
-
+}, {passive: false});
 //=================== logic file input ============================================
 
 let allMessages = [];
@@ -115,8 +114,6 @@ function applyFilters() {
 
     const filteredMessages = allMessages.filter(msg => {
         const matchesDate = !filterDate || msg.date == filterDate;
-        console.log(msg.date)
-        console.log(filterDate)
         const matchesSearch = !searchTerm || msg.message.toLowerCase().includes(searchTerm);
         return matchesDate && matchesSearch;
     });
