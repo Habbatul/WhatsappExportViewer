@@ -214,6 +214,8 @@
         }
 
         //========= untuk menerapkan filter =============
+        let displayedMessages = []; 
+        let chunkSize = 60; 
 
         function applyFilters() {
             const filterDate = document.getElementById('dateFilter').value.split('-').reverse().map((part, index) => index === 2 ? part.slice(2) : part).join('/');
@@ -225,20 +227,22 @@
                 return matchesDate && matchesSearch;
             });
 
-            displayMessages(filteredMessages);
+            displayedMessages = []; 
+            displayMessages(filteredMessages.slice(0, chunkSize)); 
         }
 
-        //========= nampilin chat saat ini, ada beberapa printilan untuk pembeda user =============
         const userColors = {};
         let lastUser = null;
         let lastColor = null;
 
         function displayMessages(messages) {
             const chatContainer = document.getElementById('chatContainer');
-            chatContainer.innerHTML = '<div id="currentDate"></div>';
+            if (displayedMessages.length === 0) {
+                chatContainer.innerHTML = '<div id="currentDate"></div>';
+            }
 
-            let currentDate = '';
-            const fragment = document.createDocumentFragment(); //pakek fragent biar mempercepat
+            let currentDate = displayedMessages.length > 0 ? displayedMessages[displayedMessages.length - 1].date : '';
+            const fragment = document.createDocumentFragment();
 
             messages.forEach(msg => {
                 if (msg.date !== currentDate) {
@@ -254,13 +258,15 @@
                 messageElement.setAttribute('data-date', msg.date);
                 messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
                 messageElement.style.backgroundColor = getUserColor(msg.user);
-                fragment.appendChild(messageElement); //pakek fragent biar mempercepat
+                fragment.appendChild(messageElement);
             });
 
             chatContainer.appendChild(fragment);
+            displayedMessages = displayedMessages.concat(messages);
 
-            // Scroll to bottom after rendering
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            if (displayedMessages.length === chunkSize) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
         }
 
         function getUserColor(username) {
@@ -272,43 +278,20 @@
             return userColors[username];
         }
 
-
-        //================ coba lazy scroll =============
-        function handleScroll() {
-            const chatContainer = document.getElementById('chatContainer');
-            const scrolledHeight = chatContainer.scrollHeight - chatContainer.clientHeight - chatContainer.scrollTop;
-
-            if (scrolledHeight < 200 && visibleMessages < totalMessages) {
-                const remainingMessages = totalMessages - visibleMessages;
-                const newMessagesToShow = remainingMessages >= 60 ? 60 : remainingMessages;
-
-                const fragment = document.createDocumentFragment();
-
-                for (let i = visibleMessages; i < visibleMessages + newMessagesToShow; i++) {
-                    const msg = allMessages[i];
-                    const currentDate = msg.date;
-
-                    const messageElement = document.createElement('div');
-                    messageElement.className = 'message';
-                    messageElement.setAttribute('data-date', msg.date);
-                    messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
-                    messageElement.style.backgroundColor = getUserColor(msg.user);
-                    fragment.appendChild(messageElement);
+        function loadMoreMessages() {
+            const scrollTop = document.getElementById('chatContainer').scrollTop;
+            if (scrollTop === 0) {
+                const remainingMessages = allMessages.slice(displayedMessages.length, displayedMessages.length + chunkSize);
+                if (remainingMessages.length > 0) {
+                    const currentHeight = chatContainer.scrollHeight;
+                    displayMessages(remainingMessages);
+                    chatContainer.scrollTop = chatContainer.scrollHeight - currentHeight;
                 }
-
-                chatContainer.appendChild(fragment);
-                visibleMessages += newMessagesToShow;
-
-                chatContainer.scrollTop = chatContainer.scrollHeight - currentScrollHeight;
-                currentScrollHeight = chatContainer.scrollHeight;
             }
         }
 
-        document.getElementById('chatContainer').addEventListener('scroll', function() {
-            handleScroll(); 
-        });
-
-
+        document.getElementById('chatContainer').addEventListener('scroll', loadMoreMessages);
+        
 
 
         //========================= Update keterangan tanggal saat ini =============
