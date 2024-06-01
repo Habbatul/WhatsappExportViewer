@@ -1,39 +1,21 @@
 //=========================== mencegah scroll untuk reload ==========================
-document.getElementById('chatContainer').addEventListener('touchstart', function(e) {
-    if (e.targetTouches.length > 1) {
-        e.preventDefault(); 
-    }
-}, { passive: false });
+const chatContainer = document.getElementById('chatContainer');
 
-document.getElementById('chatContainer').addEventListener('touchmove', function(e) {
-    if (e.targetTouches.length > 1) {
-        e.preventDefault(); 
+chatContainer.addEventListener('touchstart', function(e) {
+    if (e.target === chatContainer || chatContainer.contains(e.target)) {
+        e.stopPropagation();
     } else {
-        //bolehkan scroll untuk single touch
-        const container = e.currentTarget;
-        const canScroll = container.scrollHeight > container.clientHeight;
-
-        if (canScroll) {
-            const touch = e.targetTouches[0];
-            const startY = touch.clientY;
-
-            container.addEventListener('touchmove', function onTouchMove(e) {
-                const touchMove = e.targetTouches[0];
-                const moveY = touchMove.clientY;
-
-                if (container.scrollTop === 0 && moveY > startY) {
-                    e.preventDefault();  //mencegah pull untuk reload/refresh halaman
-                } else if (container.scrollTop + container.clientHeight >= container.scrollHeight && moveY < startY) {
-                    e.preventDefault();  //cegah scroll melewati bagian bawah
-                } else {
-                    e.stopImmediatePropagation();
-                }
-
-                container.removeEventListener('touchmove', onTouchMove);
-            }, { passive: false });
-        }
+        e.preventDefault();
     }
-}, { passive: false });
+});
+
+chatContainer.addEventListener('touchmove', function(e) {
+    if (e.target === chatContainer || chatContainer.contains(e.target)) {
+        e.stopPropagation();
+    } else {
+        e.preventDefault();
+    }
+});
 
 
 //=================== logic file input ============================================
