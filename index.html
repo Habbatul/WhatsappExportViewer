@@ -7,6 +7,9 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#317EFB"/>
     <style>
+        html.overscroll-none {
+            overscroll-behavior: none;
+        }
         body {
             font-family: Arial, sans-serif;
             background-color: rgba(86, 115, 97, 0.692);
@@ -121,6 +124,25 @@
     </div>
     <script src="register.js"></script>
     <script>
+        //=========================== mencegah scroll untuk pull reload di mobile ==========================
+        const chatContainer = document.getElementById('chatContainer');
+
+        chatContainer.addEventListener('touchstart', function(e) {
+            document.documentElement.classList.add('overscroll-none');
+        });
+
+        chatContainer.addEventListener('touchmove', function(e) {
+            document.documentElement.classList.add('overscroll-none');
+        });
+
+        chatContainer.addEventListener('touchend', function(e) {
+            document.documentElement.classList.remove('overscroll-none');
+        });
+
+        chatContainer.addEventListener('touchcancel', function(e) {
+            document.documentElement.classList.remove('overscroll-none');
+        });
+
         //=================== logic file input ============================================
 
         let allMessages = [];
@@ -235,26 +257,29 @@
             chatContainer.innerHTML = '<div id="currentDate"></div>';
 
             let currentDate = '';
+            const fragment = document.createDocumentFragment();
+
             messages.forEach(msg => {
                 if (msg.date !== currentDate) {
                     currentDate = msg.date;
                     const dateGroup = document.createElement('div');
                     dateGroup.className = 'date-group';
                     dateGroup.textContent = currentDate;
-                    chatContainer.appendChild(dateGroup);
+                    fragment.appendChild(dateGroup);
                 }
 
                 const messageElement = document.createElement('div');
                 messageElement.className = 'message';
                 messageElement.setAttribute('data-date', msg.date);
                 messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
-                messageElement.style.backgroundColor = getUserColor(msg.user); // Menetapkan warna balon pesan berdasarkan pengguna
-                chatContainer.appendChild(messageElement);
+                messageElement.style.backgroundColor = getUserColor(msg.user);
+                fragment.appendChild(messageElement);
             });
 
-            //scroll ke bottom setelah rendering (jadi nanti scroll nya keatas)
+            chatContainer.appendChild(fragment);
+
+            // Scroll to bottom after rendering
             chatContainer.scrollTop = chatContainer.scrollHeight;
-            updateStickyDate();
         }
 
         function getUserColor(username) {
