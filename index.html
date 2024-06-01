@@ -124,25 +124,6 @@
     </div>
     <script src="register.js"></script>
     <script>
-        //=========================== mencegah scroll untuk pull reload di mobile ==========================
-        const chatContainer = document.getElementById('chatContainer');
-
-        chatContainer.addEventListener('touchstart', function(e) {
-            document.documentElement.classList.add('overscroll-none');
-        });
-
-        chatContainer.addEventListener('touchmove', function(e) {
-            document.documentElement.classList.add('overscroll-none');
-        });
-
-        chatContainer.addEventListener('touchend', function(e) {
-            document.documentElement.classList.remove('overscroll-none');
-        });
-
-        chatContainer.addEventListener('touchcancel', function(e) {
-            document.documentElement.classList.remove('overscroll-none');
-        });
-
         //=================== logic file input ============================================
 
         let allMessages = [];
@@ -251,6 +232,9 @@
         const userColors = {};
         let lastUser = null;
         let lastColor = null;
+        let totalMessages = 0;
+        let visibleMessages = 60;
+        let currentScrollHeight = 0;
 
         function displayMessages(messages) {
             const chatContainer = document.getElementById('chatContainer');
@@ -259,7 +243,9 @@
             let currentDate = '';
             const fragment = document.createDocumentFragment();
 
-            messages.forEach(msg => {
+            const limitedMessages = messages.slice(0, visibleMessages);
+
+            limitedMessages.forEach((msg, index) => {
                 if (msg.date !== currentDate) {
                     currentDate = msg.date;
                     const dateGroup = document.createElement('div');
@@ -280,6 +266,41 @@
 
             // Scroll to bottom after rendering
             chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            totalMessages = messages.length;
+            currentScrollHeight = chatContainer.scrollHeight;
+
+            // Add scroll event listener
+            chatContainer.addEventListener('scroll', handleScroll);
+        }
+
+        function handleScroll() {
+            const chatContainer = document.getElementById('chatContainer');
+            const scrollableHeight = chatContainer.scrollHeight - chatContainer.clientHeight;
+            const scrolledHeight = chatContainer.scrollTop;
+
+            if (scrollableHeight - scrolledHeight < 200 && visibleMessages < totalMessages) {
+                const remainingMessages = totalMessages - visibleMessages;
+                const newMessagesToShow = remainingMessages >= 60 ? 60 : remainingMessages;
+
+                const fragment = document.createDocumentFragment();
+
+                for (let i = visibleMessages; i < visibleMessages + newMessagesToShow; i++) {
+                    const msg = messages[i];
+                    const currentDate = msg.date;
+
+                    const messageElement = document.createElement('div');
+                    messageElement.className = 'message';
+                    messageElement.setAttribute('data-date', msg.date);
+                    messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
+                    messageElement.style.backgroundColor = getUserColor(msg.user);
+                    fragment.appendChild(messageElement);
+                }
+
+                chatContainer.appendChild(fragment);
+                visibleMessages += newMessagesToShow;
+                currentScrollHeight = chatContainer.scrollHeight;
+            }
         }
 
         function getUserColor(username) {
