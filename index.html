@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WA Export Reader</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#317EFB"/>
+    <meta name="theme-color" content="#567361b0"/>
     <style>
         html.overscroll-none {
             overscroll-behavior: none;
@@ -125,7 +125,6 @@
     <script src="register.js"></script>
     <script>
         //=================== logic file input ============================================
-
         let allMessages = [];
 
         document.getElementById('fileInput').addEventListener('change', function(event) {
@@ -163,16 +162,6 @@
         });
 
 
-        //=================filter dengan change sangat lambat ketika input============
-        // document.getElementById('dateFilter').addEventListener('change', function() {
-        //     applyFilters();
-        // });
-
-        // document.getElementById('searchInput').addEventListener('input', function() {
-        //     applyFilters();
-        // });
-
-
         //=========filter dengan button===========
         document.getElementById('submitButton').addEventListener('click', function(event) {
             event.preventDefault();
@@ -185,7 +174,6 @@
 
 
         //========= parsing txt dan urutkan dari tanggal terbaru ke yang lama =============
-
         function parseMessages(content) {
             const lines = content.split('\n');
             const messages = [];
@@ -214,7 +202,6 @@
         }
 
         //========= untuk menerapkan filter =============
-
         function applyFilters() {
             const filterDate = document.getElementById('dateFilter').value.split('-').reverse().map((part, index) => index === 2 ? part.slice(2) : part).join('/');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -273,7 +260,6 @@
 
 
         //========================= Update keterangan tanggal saat ini =============
-
         function updateStickyDate() {
             const chatContainer = document.getElementById('chatContainer');
             const messages = Array.from(chatContainer.getElementsByClassName('message'));
