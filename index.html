@@ -214,92 +214,62 @@
         }
 
         //========= untuk menerapkan filter =============
-        let displayedMessages = [];
-let chunkSize = 60;
-let filteredMessages = [];
 
-function applyFilters() {
-    const filterDate = document.getElementById('dateFilter').value.split('-').reverse().map((part, index) => index === 2 ? part.slice(2) : part).join('/');
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        function applyFilters() {
+            const filterDate = document.getElementById('dateFilter').value.split('-').reverse().map((part, index) => index === 2 ? part.slice(2) : part).join('/');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
-    filteredMessages = allMessages.filter(msg => {
-        const matchesDate = !filterDate || msg.date == filterDate;
-        const matchesSearch = !searchTerm || msg.message.toLowerCase().includes(searchTerm);
-        return matchesDate && matchesSearch;
-    });
+            const filteredMessages = allMessages.filter(msg => {
+                const matchesDate = !filterDate || msg.date == filterDate;
+                const matchesSearch = !searchTerm || msg.message.toLowerCase().includes(searchTerm);
+                return matchesDate && matchesSearch;
+            });
 
-    displayedMessages = [];
-    displayMessages(filteredMessages.slice(0, chunkSize));
-}
-
-const userColors = {};
-let lastUser = null;
-let lastColor = null;
-
-function displayMessages(messages, prepend = false) {
-    const chatContainer = document.getElementById('chatContainer');
-    if (displayedMessages.length === 0 && !prepend) {
-        chatContainer.innerHTML = '<div id="currentDate"></div>';
-    }
-
-    let currentDate = displayedMessages.length > 0 ? displayedMessages[0].date : '';
-    const fragment = document.createDocumentFragment();
-
-    messages.forEach(msg => {
-        if (msg.date !== currentDate) {
-            currentDate = msg.date;
-            const dateGroup = document.createElement('div');
-            dateGroup.className = 'date-group';
-            dateGroup.textContent = currentDate;
-            fragment.insertBefore(dateGroup, fragment.firstChild);
+            displayMessages(filteredMessages);
         }
 
-        const messageElement = document.createElement('div');
-        messageElement.className = 'message';
-        messageElement.setAttribute('data-date', msg.date);
-        messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
-        messageElement.style.backgroundColor = getUserColor(msg.user);
-        fragment.insertBefore(messageElement, fragment.firstChild);
-    });
+        //========= nampilin chat saat ini, ada beberapa printilan untuk pembeda user =============
+        const userColors = {};
+        let lastUser = null;
+        let lastColor = null;
 
-    if (prepend) {
-        displayedMessages = messages.concat(displayedMessages);
-        chatContainer.insertBefore(fragment, chatContainer.firstChild);
-    } else {
-        displayedMessages = displayedMessages.concat(messages);
-        chatContainer.appendChild(fragment);
-    }
+        function displayMessages(messages) {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.innerHTML = '<div id="currentDate"></div>';
 
-    if (!prepend) {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-}
+            let currentDate = '';
+            const fragment = document.createDocumentFragment(); //pakek fragent biar mempercepat
 
-function getUserColor(username) {
-    if (!userColors[username]) {
-        userColors[username] = (lastColor === '#dcf8c6') ? '#ffffff' : '#dcf8c6';
-    }
-    lastUser = username;
-    lastColor = userColors[username];
-    return userColors[username];
-}
+            messages.forEach(msg => {
+                if (msg.date !== currentDate) {
+                    currentDate = msg.date;
+                    const dateGroup = document.createElement('div');
+                    dateGroup.className = 'date-group';
+                    dateGroup.textContent = currentDate;
+                    fragment.appendChild(dateGroup);
+                }
 
-function loadMoreMessages() {
-    const chatContainer = document.getElementById('chatContainer');
-    const scrollTop = chatContainer.scrollTop;
-    if (scrollTop <= 300) {
-        const remainingMessages = filteredMessages.slice(displayedMessages.length, displayedMessages.length + chunkSize);
-        if (remainingMessages.length > 0) {
-            const currentHeight = chatContainer.scrollHeight;
-            displayMessages(remainingMessages, true);
-            chatContainer.scrollTop = chatContainer.scrollHeight - currentHeight;
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                messageElement.setAttribute('data-date', msg.date);
+                messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
+                messageElement.style.backgroundColor = getUserColor(msg.user);
+                fragment.appendChild(messageElement);//pakek fragent biar mempercepat
+            });
+
+            chatContainer.appendChild(fragment);
+
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
-    }
-}
 
-document.getElementById('chatContainer').addEventListener('scroll', loadMoreMessages);
-
-        
+        function getUserColor(username) {
+            if (!userColors[username]) {
+                userColors[username] = (lastColor === '#dcf8c6') ? '#ffffff' : '#dcf8c6';
+            }
+            lastUser = username;
+            lastColor = userColors[username];
+            return userColors[username];
+        }
 
 
         //========================= Update keterangan tanggal saat ini =============
