@@ -261,9 +261,9 @@
                 messageElement.style.backgroundColor = getUserColor(msg.user);
                 fragment.appendChild(messageElement);
             });
-
-            chatContainer.appendChild(fragment);
             displayedMessages = displayedMessages.concat(messages);
+            chatContainer.appendChild(fragment);
+
 
             if (displayedMessages.length === chunkSize) {
                 chatContainer.scrollTop = chatContainer.scrollHeight;
