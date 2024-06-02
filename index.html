@@ -229,7 +229,7 @@
             });
 
             displayedMessages = []; 
-            displayMessages(filteredMessages.slice(0, chunkSize)); 
+            displayMessages(filteredMessages.reverse().slice(0, chunkSize)); 
         }
 
         const userColors = {};
