@@ -280,7 +280,7 @@
 
         function loadMoreMessages() {
             const scrollTop = document.getElementById('chatContainer').scrollTop;
-            if (scrollTop === 0) {
+            if (scrollTop <= 150) {
                 const remainingMessages = allMessages.slice(displayedMessages.length, displayedMessages.length + chunkSize);
                 if (remainingMessages.length > 0) {
                     const currentHeight = chatContainer.scrollHeight;
