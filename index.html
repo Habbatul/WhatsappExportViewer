@@ -229,7 +229,7 @@
             });
 
             displayedMessages = []; 
-            displayMessages(filteredMessages.reverse().slice(0, chunkSize)); 
+            displayMessages(filteredMessages.slice(chunkSize, 0)); 
         }
 
         const userColors = {};
@@ -282,7 +282,7 @@
         function loadMoreMessages() {
             const chatContainer = document.getElementById('chatContainer');
             const scrollTop = chatContainer.scrollTop;
-            if (scrollTop <= 250) {
+            if (scrollTop <= 300) {
                 const remainingMessages = filteredMessages.slice(displayedMessages.length, displayedMessages.length + chunkSize);
                 if (remainingMessages.length > 0) {
                     const currentHeight = chatContainer.scrollHeight;
