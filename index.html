@@ -216,12 +216,13 @@
         //========= untuk menerapkan filter =============
         let displayedMessages = []; 
         let chunkSize = 60; 
+        let filteredMessages = [];
 
         function applyFilters() {
             const filterDate = document.getElementById('dateFilter').value.split('-').reverse().map((part, index) => index === 2 ? part.slice(2) : part).join('/');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
-            const filteredMessages = allMessages.filter(msg => {
+            filteredMessages = allMessages.filter(msg => {
                 const matchesDate = !filterDate || msg.date == filterDate;
                 const matchesSearch = !searchTerm || msg.message.toLowerCase().includes(searchTerm);
                 return matchesDate && matchesSearch;
@@ -279,9 +280,10 @@
         }
 
         function loadMoreMessages() {
-            const scrollTop = document.getElementById('chatContainer').scrollTop;
-            if (scrollTop <= 150) {
-                const remainingMessages = allMessages.slice(displayedMessages.length, displayedMessages.length + chunkSize);
+            const chatContainer = document.getElementById('chatContainer');
+            const scrollTop = chatContainer.scrollTop;
+            if (scrollTop <= 250) {
+                const remainingMessages = filteredMessages.slice(displayedMessages.length, displayedMessages.length + chunkSize);
                 if (remainingMessages.length > 0) {
                     const currentHeight = chatContainer.scrollHeight;
                     displayMessages(remainingMessages);
