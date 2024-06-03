@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WA Export Reader</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#567361b0"/>
+    <meta name="theme-color" content="#317EFB"/>
     <style>
         html.overscroll-none {
             overscroll-behavior: none;
@@ -125,6 +125,7 @@
     <script src="register.js"></script>
     <script>
         //=================== logic file input ============================================
+
         let allMessages = [];
 
         document.getElementById('fileInput').addEventListener('change', function(event) {
@@ -162,6 +163,16 @@
         });
 
 
+        //=================filter dengan change sangat lambat ketika input============
+        // document.getElementById('dateFilter').addEventListener('change', function() {
+        //     applyFilters();
+        // });
+
+        // document.getElementById('searchInput').addEventListener('input', function() {
+        //     applyFilters();
+        // });
+
+
         //=========filter dengan button===========
         document.getElementById('submitButton').addEventListener('click', function(event) {
             event.preventDefault();
@@ -174,6 +185,7 @@
 
 
         //========= parsing txt dan urutkan dari tanggal terbaru ke yang lama =============
+
         function parseMessages(content) {
             const lines = content.split('\n');
             const messages = [];
@@ -202,52 +214,73 @@
         }
 
         //========= untuk menerapkan filter =============
+        let displayedMessages = []; 
+        let chunkSize = 60; 
+        let filteredMessages = [];
+
         function applyFilters() {
-            const filterDate = document.getElementById('dateFilter').value.split('-').reverse().map((part, index) => index === 2 ? part.slice(2) : part).join('/');
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const filterDate = document.getElementById('dateFilter').value.split('-').reverse().map((part, index) => index === 2 ? part.slice(2) : part).join('/');
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
-            const filteredMessages = allMessages.filter(msg => {
-                const matchesDate = !filterDate || msg.date == filterDate;
-                const matchesSearch = !searchTerm || msg.message.toLowerCase().includes(searchTerm);
-                return matchesDate && matchesSearch;
-            });
+    filteredMessages = allMessages.filter(msg => {
+        const matchesDate = !filterDate || msg.date == filterDate;
+        const matchesSearch = !searchTerm || msg.message.toLowerCase().includes(searchTerm);
+        return matchesDate && matchesSearch;
+    });
 
-            displayMessages(filteredMessages);
-        }
+    displayedMessages = []; 
+    displayMessages(filteredMessages.slice(0, chunkSize)); 
+}
 
-        //========= nampilin chat saat ini, ada beberapa printilan untuk pembeda user =============
+
+
         const userColors = {};
         let lastUser = null;
         let lastColor = null;
 
         function displayMessages(messages) {
-            const chatContainer = document.getElementById('chatContainer');
-            chatContainer.innerHTML = '<div id="currentDate"></div>';
+    const chatContainer = document.getElementById('chatContainer');
+    const currentDateElem = document.getElementById('currentDate');
+    
+    if (displayedMessages.length === 0) {
+        chatContainer.innerHTML = '';
+        chatContainer.appendChild(currentDateElem);
+    }
 
-            let currentDate = '';
-            const fragment = document.createDocumentFragment(); //pakek fragent biar mempercepat
+    let currentDate = displayedMessages.length > 0 ? displayedMessages[0].date : '';
+    const existingDateGroups = new Set(Array.from(chatContainer.getElementsByClassName('date-group')).map(group => group.textContent));
 
-            messages.forEach(msg => {
-                if (msg.date !== currentDate) {
-                    currentDate = msg.date;
-                    const dateGroup = document.createElement('div');
-                    dateGroup.className = 'date-group';
-                    dateGroup.textContent = currentDate;
-                    fragment.appendChild(dateGroup);
-                }
+    const fragment = document.createDocumentFragment();
 
-                const messageElement = document.createElement('div');
-                messageElement.className = 'message';
-                messageElement.setAttribute('data-date', msg.date);
-                messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
-                messageElement.style.backgroundColor = getUserColor(msg.user);
-                fragment.appendChild(messageElement);//pakek fragent biar mempercepat
-            });
-
-            chatContainer.appendChild(fragment);
-
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+    messages.forEach(msg => {
+        if (!existingDateGroups.has(msg.date) && msg.date !== currentDate) {
+            currentDate = msg.date;
+            existingDateGroups.add(currentDate);
+            const dateGroup = document.createElement('div');
+            dateGroup.className = 'date-group';
+            dateGroup.textContent = currentDate;
+            fragment.prepend(dateGroup);
         }
+
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message';
+        messageElement.setAttribute('data-date', msg.date);
+        messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
+        messageElement.style.backgroundColor = getUserColor(msg.user);
+        fragment.prepend(messageElement);
+    });
+
+    chatContainer.prepend(fragment);
+
+    // Update displayedMessages after appending new messages
+    displayedMessages = messages.concat(displayedMessages);
+    
+    // Ensure the sticky date element stays at the top
+    chatContainer.prepend(currentDateElem);
+}
+
+
+
 
         function getUserColor(username) {
             if (!userColors[username]) {
@@ -258,22 +291,44 @@
             return userColors[username];
         }
 
+        function loadMoreMessages() {
+    const chatContainer = document.getElementById('chatContainer');
+    const scrollTop = chatContainer.scrollTop;
+    if (scrollTop <= 1000) {
+        const remainingMessages = filteredMessages.slice(displayedMessages.length, displayedMessages.length + chunkSize);
+        if (remainingMessages.length > 0) {
+            const currentHeight = chatContainer.scrollHeight;
+            displayMessages(remainingMessages);
+            chatContainer.scrollTop = chatContainer.scrollHeight - currentHeight;
+        }
+    }
+}
+
+
+        document.getElementById('chatContainer').addEventListener('scroll', loadMoreMessages);
+        
+
 
         //========================= Update keterangan tanggal saat ini =============
         function updateStickyDate() {
-            const chatContainer = document.getElementById('chatContainer');
-            const messages = Array.from(chatContainer.getElementsByClassName('message'));
-            const currentDateElem = document.getElementById('currentDate');
+    const chatContainer = document.getElementById('chatContainer');
+    const messages = Array.from(chatContainer.getElementsByClassName('message'));
+    const currentDateElem = document.getElementById('currentDate');
 
-            for (const message of messages) {
-                const rect = message.getBoundingClientRect();
-                if (rect.top >= chatContainer.getBoundingClientRect().top) {
-                    const date = message.getAttribute('data-date');
-                    currentDateElem.textContent = date;
-                    break;
-                }
-            }
+    for (const message of messages) {
+        const rect = message.getBoundingClientRect();
+        if (rect.top >= chatContainer.getBoundingClientRect().top) {
+            const date = message.getAttribute('data-date');
+            currentDateElem.textContent = date;
+            break;
         }
+    }
+
+    // Ensure the sticky date element stays at the top
+    chatContainer.prepend(currentDateElem);
+}
+
+
     </script>
 </body>
 </html>
