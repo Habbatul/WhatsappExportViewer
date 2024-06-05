@@ -3,9 +3,15 @@ self.addEventListener('install', function(event) {
       caches.open('my-pwa-cache-v2').then(function(cache) {
         return cache.addAll([
           '',
-          'index.html',
+          '../index.html',
           'register.js',
-          'icon.png',
+          '../asset/icon.png',
+          '../asset/iconBig.png',
+          '../jquery/datepicker.js',
+          '../jquery/jquery-3.7.1.min.js',
+          '../main/datepicker.css',
+          '../main/style.css',
+          '../main/main.js',
         ]);
       })
     );

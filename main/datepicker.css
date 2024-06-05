@@ -1,0 +1,75 @@
+.ui-datepicker {
+    display: none;
+    background: #ede9e4; /* White background for datepicker */
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10; /* Higher z-index value to ensure it appears above other elements */
+    font-family: "Inter", sans-serif;
+    scrollbar-width: thin;
+    scrollbar-color: #b9b9b9 #ffffff91;
+}
+
+.ui-datepicker .ui-datepicker-header {
+    text-align: center; /* Center align the header text */
+}
+
+.ui-datepicker .ui-datepicker-title {
+    font-size: 1em;
+    margin: 0.5em 0;
+}
+
+.ui-datepicker-month,
+.ui-datepicker-year {
+    font-size: 14px;
+    font-weight: 400;
+    background-color: #ede9e4;
+}
+/* lebar scrollbar yang diinginkan */
+.ui-datepicker-month::-webkit-scrollbar,
+.ui-datepicker-year::-webkit-scrollbar {
+    width: 6px; 
+}
+/* warna scrollbar thumb */
+.ui-datepicker-month::-webkit-scrollbar-thumb,
+.ui-datepicker-year::-webkit-scrollbar-thumb {
+    background-color: #b9b9b9; 
+}
+
+/* warna scrollbar track */
+.ui-datepicker-month::-webkit-scrollbar-track,
+.ui-datepicker-year::-webkit-scrollbar-track {
+    background-color: #ffffff91; 
+}
+
+.ui-datepicker table {
+    font-size: 0.9em;
+    text-align: center;
+}
+
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
+    margin: 0 5px; 
+    display: inline-block;
+    padding: 0.2rem;
+    cursor: pointer;
+    font-weight: 800;
+    border: 2px solid rgb(0, 0, 0);
+}
+
+
+.ui-datepicker .ui-state-default {
+    color: rgb(0, 0, 0); /* Set text color to black */
+    text-decoration: none; /* Remove underline */
+    padding: 0.2rem;
+}
+
+.ui-datepicker .ui-state-active {
+    background: #4acd85;
+    padding: 0.2rem;
+    color: #ffffff;
+}
+
+.ui-datepicker .ui-state-hover {
+    background: #628f74;
+    padding: 0.2rem;
+    color: #ffffff;
+}

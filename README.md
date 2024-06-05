@@ -3,8 +3,9 @@
 
 ## About The Project
 
-This web application (PWA) allows you to display WhatsApp chat logs saved in .txt format in a more readable format, similar to the original WhatsApp (note: the styling will not be identical). The app is built using vanilla JavaScript and CSS, so no special setup is required to run it locally.
+This web application (PWA) allows you to display WhatsApp chat logs saved in .txt format in a more readable format, similar to the original WhatsApp (note: the styling will not be identical). The app is built using vanilla JavaScript and CSS, so no special setup is required to run it locally. 
 
+**Update** : I've added a datepicker from jQuery for date input. You can check the minimum library I'm using in the jQuery folder in this repo.
 
 ### Features
 
