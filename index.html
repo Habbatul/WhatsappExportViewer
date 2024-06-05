@@ -7,8 +7,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="main/style.css">
+    <link rel="stylesheet" href="main/datepicker.css">
+    <link rel="manifest" href="pwa/manifest.json">
     <meta name="theme-color" content="#ece5dd"/>
 </head>
 <body>
@@ -17,8 +18,11 @@
             <input type="file" id="fileInput" accept=".txt">
             <label for="fileInput" id="fileLabel">Upload File</label>
         </div>
-        <input type="text" id="dateFilter" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Input Date" />
         <input type="text" id="searchInput" placeholder="Search messages">
+        <div>
+            <input type="text" id="dateFilter" placeholder="Input Date" readonly style="width: 60%;">
+            <button id="resetButton" style="margin: 0px;background-color: rgb(204, 120, 120)">Reset date</button>
+        </div>  
         <div style="display:flex;justify-content: center;margin-top: 0.2rem;margin-bottom: 0.5rem;">
             <button type="submit" id="submitButton">Submit Filter</button>
             <button type="submit" id="toggleButtonClosed">Tutup Filter</button>
@@ -28,7 +32,21 @@
     <div id="chatContainer">
         <div id="currentDate"></div>
     </div>
-    <script src="register.js"></script>
-    <script src="main.js"> </script>
+    <script src="pwa/register.js"></script>
+    <script src="main/main.js"> </script>
+    <script src="jquery/jquery-3.7.1.min.js"></script>
+    <script src="jquery/datepicker.js"></script>
+    <script>
+        $("#dateFilter").datepicker({
+            dateFormat: "yy-mm-dd",
+            showOn: "focus",
+            changeMonth: true,
+            changeYear: true,
+            navigationAsDateFormat: true,
+        });
+        $("#resetButton").click(function() {
+            $("#dateFilter").val('');
+        });
+    </script>
 </body>
 </html>
