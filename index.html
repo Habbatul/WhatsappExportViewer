@@ -126,6 +126,9 @@
     <script>
         //=================== logic file input ============================================
         let allMessages = [];
+        let filteredMessages = []; 
+        let displayedMessages = []; 
+        const chunkSize = 60;
 
         document.getElementById('fileInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
@@ -161,17 +164,6 @@
             }
         });
 
-
-        //=================filter dengan change sangat lambat ketika input============
-        // document.getElementById('dateFilter').addEventListener('change', function() {
-        //     applyFilters();
-        // });
-
-        // document.getElementById('searchInput').addEventListener('input', function() {
-        //     applyFilters();
-        // });
-
-
         //=========filter dengan button===========
         document.getElementById('submitButton').addEventListener('click', function(event) {
             event.preventDefault();
@@ -181,7 +173,6 @@
         document.getElementById('chatContainer').addEventListener('scroll', function() {
             updateStickyDate();
         });
-
 
         //========= parsing txt dan urutkan dari tanggal terbaru ke yang lama =============
         function parseMessages(content) {
@@ -198,7 +189,6 @@
                         message: match[4]
                     });
                 }
-
             }
 
             //sorting pesan dari yang tua itu diatas dan terbawah adalah terbaru
@@ -211,12 +201,7 @@
             return messages;
         }
 
-
         //========= untuk menerapkan filter =============
-        let displayedMessages = []; 
-        let chunkSize = 60; 
-        let filteredMessages = [];
-
         function applyFilters() {
             const filterDate = document.getElementById('dateFilter').value.split('-').reverse().map((part, index) => index === 2 ? part.slice(2) : part).join('/');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -230,7 +215,6 @@
             displayedMessages = []; 
             displayMessages(filteredMessages.slice(-chunkSize).reverse()); 
         }
-
 
         //========= untuk dom manipulation (pesan yang ditampilkan) =============
         const userColors = {};
@@ -252,7 +236,6 @@
             const fragment = document.createDocumentFragment();
 
             messages.forEach(msg => {
-
                 //kalo tanggal udah ada gausah dibuat lagi
                 if (!existingDateGroups.has(msg.date) && msg.date !== currentDate) {
                     currentDate = msg.date;
@@ -293,14 +276,13 @@
             return userColors[username];
         }
 
-
         //========= logic lazy loadnya =============
         function loadMoreMessages() {
             const chatContainer = document.getElementById('chatContainer');
             const scrollTop = chatContainer.scrollTop;
             if (scrollTop <= 800) {
-                const start = Math.max(allMessages.length - displayedMessages.length - chunkSize, 0);
-                const remainingMessages = allMessages.slice(start, allMessages.length - displayedMessages.length);
+                const start = Math.max(filteredMessages.length - displayedMessages.length - chunkSize, 0);
+                const remainingMessages = filteredMessages.slice(start, filteredMessages.length - displayedMessages.length);
 
                 if (remainingMessages.length > 0) {
                     const currentHeight = chatContainer.scrollHeight;
@@ -310,9 +292,7 @@
             }
         }
 
-
         document.getElementById('chatContainer').addEventListener('scroll', loadMoreMessages);
-        
 
         //========================= Update keterangan tanggal saat ini =============
         function updateStickyDate() {
@@ -331,7 +311,6 @@
             //sticky date kudu tetep diatas
             chatContainer.prepend(currentDateElem);
         }
-
 
     </script>
 </body>
