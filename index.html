@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WA Export Reader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#317EFB"/>
+    <meta name="theme-color" content="#567361b0"/>
     <style>
         html.overscroll-none {
             overscroll-behavior: none;
@@ -20,12 +23,42 @@
             align-items: center;
             height: 100vh;
         }
+        button{
+            font-family: "Inter", sans-serif;
+            font-weight: 300;
+            margin-left: 0.2rem;
+            margin-right: 0.2rem;
+            padding: .23rem .25rem;
+            text-align: center;
+            border: 1px solid transparent;
+            font-size: 0.8rem;
+            border-radius: .25rem;
+            color: #ffffff;
+            background-color: #11965e;
+            cursor: pointer;
+        }
+        button:hover{
+            color: #dfdfdf;
+            background-color: #00864e;
+        }
+        input[type=text],input[type=date]{
+            font-family: "Inter", sans-serif;
+            font-weight: 500;
+            padding: 12px 20px;
+            border: 3px solid #ccc;
+            outline: none;
+        }
+        input[type=text]:focus,input[type=date]:focus {
+            border: 3px solid #555;
+        }
+
+
+
         #controls {
             margin: 10px;
             display: flex;
             flex-direction: column;
             opacity: 1;
-            transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out;
         }
 
         .hiddenControl {
@@ -50,6 +83,9 @@
             display: flex;
             flex-direction: column;
             position: relative;
+            scrollbar-width: thin;
+            scrollbar-color: #b9b9b9 #ffffff91;
+            /* transition: height 0.3s ease;  */
         }
         #currentDate {
             background-color: rgba(212, 241, 244, 0.8);
@@ -106,14 +142,48 @@
             margin-bottom:0.8rem;
             font-size: 0.9rem;
         }
+
+        
+        /*dibawah ini styling input file*/
+        .file-upload-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.25rem;
+        }
+
+        input[type="file"] {
+            position: absolute;
+            clip: rect(0,0,0,0);
+        }
+
+        label {
+            font-family: "Inter", sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+            background-color: #0983b4;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+
+        label:hover {
+            background-color: rgb(0, 89, 108);
+        }
+
     </style>
 </head>
 <body>
     <div id="controls">
-        <input type="file" id="fileInput" accept=".txt">
+        <div class="file-upload-container">
+            <input type="file" id="fileInput" accept=".txt">
+            <label for="fileInput" id="fileLabel">Upload File</label>
+        </div>
         <input type="date" id="dateFilter">
         <input type="text" id="searchInput" placeholder="Search messages">
-        <div style="display:flex;justify-content: center;">
+        <div style="display:flex;justify-content: center;margin-top: 0.2rem;">
             <button type="submit" id="submitButton">Submit Filter</button>
             <button type="submit" id="toggleButtonClosed">Tutup Filter</button>
         </div>
@@ -124,6 +194,18 @@
     </div>
     <script src="register.js"></script>
     <script>
+
+        //styling input file ganti label text
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const fileLabel = document.getElementById('fileLabel');
+            if (event.target.files.length > 0) {
+                fileLabel.textContent = 'File has uploaded';
+            } else {
+                fileLabel.textContent = 'Upload File';
+            }
+        });
+
+
         //=================== logic file input ============================================
         let allMessages = [];
         let filteredMessages = []; 
@@ -249,6 +331,7 @@
                 const messageElement = document.createElement('div');
                 messageElement.className = 'message';
                 messageElement.setAttribute('data-date', msg.date);
+                
                 messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
                 messageElement.style.backgroundColor = getUserColor(msg.user);
                 fragment.prepend(messageElement);
