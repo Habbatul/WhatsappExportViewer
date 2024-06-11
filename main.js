@@ -35,7 +35,7 @@ document.getElementById('toggleButtonClosed').addEventListener('click', function
     if (!controls.classList.contains('hiddenControl')) {
         controls.classList.add('hiddenControl');
         toggleOpen.classList.remove('hiddenControl');
-        chatContainer.style.height = `calc(100vh - 3rem)`;
+        chatContainer.style.height = `calc(100vh - 3.5rem)`;
     }
 });
 document.getElementById('toggleButtonOpen').addEventListener('click', function() {
@@ -45,7 +45,7 @@ document.getElementById('toggleButtonOpen').addEventListener('click', function()
     if (controls.classList.contains('hiddenControl')) {
         controls.classList.remove('hiddenControl');
         toggleOpen.classList.add('hiddenControl');
-        chatContainer.style.height = `calc(100vh - 170px)`;
+        chatContainer.style.height = `calc(100vh - 180px)`;
     }
 });
 
