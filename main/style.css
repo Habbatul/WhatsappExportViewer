@@ -32,7 +32,6 @@ button:hover{
     background-color: #00864e;
 }
 input[type=text],input[type=date]{
-    width: 90%;
     font-family: "Inter", sans-serif;
     font-weight: 500;
     padding: 12px 20px;
