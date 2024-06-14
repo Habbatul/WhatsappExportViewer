@@ -127,7 +127,16 @@ function displayMessages(messages) {
             existingDateGroups.add(currentDate);
             const dateGroup = document.createElement('div');
             dateGroup.className = 'date-group';
-            dateGroup.textContent = currentDate;
+            
+            const dateText = document.createElement('span');
+            dateText.textContent = currentDate;
+            
+            const topSymbol = document.createElement('span');
+            topSymbol.textContent = ' ⇧';
+            topSymbol.style.fontSize = '1.26rem';
+    
+            dateGroup.appendChild(dateText);
+            dateGroup.appendChild(topSymbol);
             fragment.prepend(dateGroup);
         }
 
