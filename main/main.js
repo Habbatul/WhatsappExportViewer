@@ -109,6 +109,7 @@ function speakMessage(message) {
     utterance.lang = 'id-ID';
     utterance.rate = 1.1;
     speechSynthesis.speak(utterance);
+    console.log("speech seharusnya active");
 }
 
 
@@ -160,6 +161,9 @@ function displayMessages(messages) {
 
         //panggil speech untuk massage
         messageElement.addEventListener('click', () => {
+            speakMessage(msg.message);
+        });
+        messageElement.addEventListener('touchstart', () => {
             speakMessage(msg.message);
         });
         
