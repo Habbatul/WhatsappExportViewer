@@ -101,6 +101,17 @@ function applyFilters() {
     displayMessages(filteredMessages.slice(-chunkSize).reverse()); 
 }
 
+
+//=========== TTS untuk SpeechSynthesisUtterance (API browser, support dibeberapa browser) ===============
+function speakMessage(message) {
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.lang = 'id-ID';
+    utterance.rate = 1.1;
+    speechSynthesis.speak(utterance);
+}
+
+
 //========= untuk dom manipulation (pesan yang ditampilkan) =============
 const userColors = {};
 let lastUser = null;
@@ -146,6 +157,12 @@ function displayMessages(messages) {
         
         messageElement.innerHTML = `<div class="meta"><strong>${msg.user}</strong></div><div class="user-chat">${msg.message}</div><div class="time">${msg.time}</div>`;
         messageElement.style.backgroundColor = getUserColor(msg.user);
+
+        //panggil speech untuk massage
+        messageElement.addEventListener('click', () => {
+            speakMessage(msg.message);
+        });
+        
         fragment.prepend(messageElement);
     });
 
