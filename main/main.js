@@ -104,12 +104,16 @@ function applyFilters() {
 
 //=========== TTS untuk SpeechSynthesisUtterance (API browser, support dibeberapa browser) ===============
 function speakMessage(message) {
-    speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(message);
-    utterance.lang = 'id-ID';
-    utterance.rate = 1.1;
-    speechSynthesis.speak(utterance);
-    console.log("speech seharusnya active");
+    //cek apakah browser support speechsynthesis
+    if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(message);
+        utterance.lang = 'id-ID';
+        utterance.rate = 1.1;
+        speechSynthesis.speak(utterance);
+    } else {
+        console.log("Your browser does not support speech synthesis.");
+    }
 }
 
 
@@ -161,9 +165,6 @@ function displayMessages(messages) {
 
         //panggil speech untuk massage
         messageElement.addEventListener('click', () => {
-            speakMessage(msg.message);
-        });
-        messageElement.addEventListener('touchstart', () => {
             speakMessage(msg.message);
         });
         
