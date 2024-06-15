@@ -9,11 +9,12 @@ This web application (PWA) allows you to display WhatsApp chat logs saved in .tx
 
 ### Features
 
-- **Lazy Loading**: Loads data as you scroll, ensuring the app remains lightweight and efficient.
-- **DOM Fragment**: Utilizes DOM fragments for better performance.
 - **Keyword Filter**: Filter messages based on keywords.
 - **Date Filter**: Filter messages based on dates.
+- **Text-to-Speech (TTS)**: Press the balloon chat you desire for Text-to-Speech (TTS) on the message in that balloon chat.
 - **PWA**: This application can be installed as an app on your Android phone.
+- **Lazy Loading**: Loads data as you scroll, ensuring the app remains lightweight and efficient.
+- **DOM Fragment**: Utilizes DOM fragments for better performance.
 - **Date Indicator**: A date indicator above the chat container shows the date of the current chat view. The date indicator is displayed below the chat group of that particular date. You can also hold on a chat bubble to see the exact date of that chat.
 
 ### Current Limitations
