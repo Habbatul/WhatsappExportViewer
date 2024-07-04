@@ -273,6 +273,7 @@
 
             chatContainer.prepend(fragment);
 
+            chatContainer.scrollTop = chatContainer.scrollHeight;
             
             //perbarui isi variable displayedMessages setelah menambahkan pesan baru
             displayedMessages = messages.concat(displayedMessages);
